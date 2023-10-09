@@ -35,7 +35,7 @@ const submitHandler = (e) => {
   const searchText = searchInputEl.value;
 
   // validation (regulary expression example)
-  const forbiddenPattern = /python/;
+  const forbiddenPattern = /[0-9]/;
   const patternMatch = forbiddenPattern.test(searchText);
   if (patternMatch) {
     errorTextEl.textContent = "Please enter a valid search term";
@@ -47,6 +47,9 @@ const submitHandler = (e) => {
 
   // blur input
   searchInputEl.blur();
+
+  //remove previous search results
+  jobListSearchEl.innerHTML = "";
   // render spinner
   spinnerSearchEl.classList.add("spinner--visible");
 
@@ -70,25 +73,30 @@ const submitHandler = (e) => {
       numberEl.textContent = jobItems.length;
 
       // render jonitems in the list
-      const newJobItemHTML = `
-      <li class="job-item">
-      <a class="job-item__link" href="${jobItems[4].id}">
-          <div class="job-item__badge">${jobItems[4].id}</div>
-          <div class="job-item__middle">
-              <h3 class="third-heading">Full-Stack Developer</h3>
-              <p class="job-item__company">LakeOperations</p>
-              <div class="job-item__extras">
-                  <p class="job-item__extra"><i class="fa-solid fa-clock job-item__extra-icon"></i> Full-Time</p>
-                  <p class="job-item__extra"><i class="fa-solid fa-money-bill job-item__extra-icon"></i> $80,000+</p>
-                  <p class="job-item__extra"><i class="fa-solid fa-location-dot job-item__extra-icon"></i> Global</p>
-              </div>
-          </div>
-          <div class="job-item__right">
-              <i class="fa-solid fa-bookmark job-item__bookmark-icon"></i>
-              <time class="job-item__time">Thu</time>
-          </div>
-      </a>
-  </li>`;
+
+      jobItems.slice(0, 7).forEach((jobItem) => {
+        const newJobItemHTML = `
+        <li class="job-item">
+        <a class="job-item__link" href="${jobItem.id}">
+            <div class="job-item__badge">${jobItem.badgeLetters}</div>
+            <div class="job-item__middle">
+                <h3 class="third-heading">${jobItem.company}</h3>
+                <p class="job-item__company">LakeOperations</p>
+                <div class="job-item__extras">
+                    <p class="job-item__extra"><i class="fa-solid fa-clock job-item__extra-icon"></i> ${jobItem.duration}</p>
+                    <p class="job-item__extra"><i class="fa-solid fa-money-bill job-item__extra-icon"></i>${jobItem.salary}</p>
+                    <p class="job-item__extra"><i class="fa-solid fa-location-dot job-item__extra-icon"></i> ${jobItem.location}</p>
+                </div>
+            </div>
+            <div class="job-item__right">
+                <i class="fa-solid fa-bookmark job-item__bookmark-icon"></i>
+                <time class="job-item__time">${jobItem.daysAgo}d</time>
+            </div>
+        </a>
+    </li>`;
+        jobListSearchEl.insertAdjacentHTML("beforeend", newJobItemHTML);
+      });
+      ˀ;
     })
     .catch((err) => {
       console.log(err);
