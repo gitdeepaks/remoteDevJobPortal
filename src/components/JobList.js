@@ -3,6 +3,7 @@ import {
   jobListSearchEl,
   spinnerJobDetailsEl,
 } from "../common.js";
+import renderSpinner from "./Spinner.js";
 
 const clickHandler = (e) => {
   e.preventDefault();
@@ -26,7 +27,7 @@ const clickHandler = (e) => {
   jobDetailsContentEl.innerHTML = "";
 
   // render spinner
-  spinnerJobDetailsEl.classList.add("spinner--visible");
+  renderSpinner("job-details");
 
   //get the data id
   const id = jobItemEl.children[0].getAttribute("href");
@@ -45,7 +46,7 @@ const clickHandler = (e) => {
       const { jobItem } = data;
 
       // remove the spinner
-      spinnerJobDetailsEl.classList.remove("spinner--visible");
+      renderSpinner("job-details");
       // render the job details
       const jobDetailsHTML = `<img src="${
         jobItem.coverImgURL
