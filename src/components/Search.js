@@ -5,6 +5,7 @@ import {
   jobListSearchEl,
   numberEl,
 } from "../common.js";
+import renderError from "./Error.js";
 
 const submitHandler = (e) => {
   // prevent default behaviour
@@ -17,11 +18,8 @@ const submitHandler = (e) => {
   const forbiddenPattern = /[0-9]/;
   const patternMatch = forbiddenPattern.test(searchText);
   if (patternMatch) {
-    errorTextEl.textContent = "Please enter a valid search term";
-    errorEl.classList.add("error--visible");
-    setTimeout(() => {
-      errorEl.classList.remove("error--visible");
-    }, 3500);
+    renderError("Please enter a valid search term");
+    return;
   }
 
   // blur input
@@ -30,6 +28,7 @@ const submitHandler = (e) => {
   //remove previous search results
   jobListSearchEl.innerHTML = "";
   // render spinner
+  //renderSpinner('search')
   spinnerSearchEl.classList.add("spinner--visible");
 
   // fetch search results
