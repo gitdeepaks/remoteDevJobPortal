@@ -1,7 +1,7 @@
 import {
   jobDetailsContentEl,
   jobListSearchEl,
-  spinnerJobDetailsEl,
+  BASE_API_URL,
 } from "../common.js";
 import renderSpinner from "./Spinner.js";
 
@@ -33,7 +33,7 @@ const clickHandler = (e) => {
   const id = jobItemEl.children[0].getAttribute("href");
 
   // fetch job details
-  fetch(`https://bytegrad.com/course-assets/js/2/api/jobs/${id}`)
+  fetch(`${BASE_API_URL}/jobs/${id}`)
     .then((res) => {
       if (!res.ok) {
         console.log("Something went wrong");
