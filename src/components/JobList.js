@@ -32,17 +32,11 @@ const renderJobList = (jobItems) => {
   });
 };
 
-const clickHandler = (e) => {
+const clickHandler = async (e) => {
   e.preventDefault();
 
   // get clicked job item element
   const jobItemEl = e.target.closest(".job-item");
-
-  // remove active class from previous job item
-  // document.querySelector(".job-item--active") &&
-  //   document
-  //     .querySelector(".job-item--active")
-  //     .classList.remove("job-item--active");
 
   document
     .querySelector(".job-item--active")
@@ -60,26 +54,26 @@ const clickHandler = (e) => {
   const id = jobItemEl.children[0].getAttribute("href");
 
   // fetch job details
-  fetch(`${BASE_API_URL}/jobs/${id}`)
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then((data) => {
-      //extract data from job details
-      const { jobItem } = data;
 
-      // remove the spinner
-      renderSpinner("job-details");
-      // render the job details
-      renderJobDetails(jobItem);
-    })
-    .catch((err) => {
-      renderSpinner("search");
-      renderError(err.message);
-    });
+  try {
+    const res = await fetch(`${BASE_API_URL}/jobs/${id}`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.description);
+    }
+
+    //extract data from job details
+    const { jobItem } = data;
+
+    // remove the spinner
+    renderSpinner("job-details");
+    // render the job details
+    renderJobDetails(jobItem);
+  } catch (error) {
+    renderSpinner("job-details");
+    renderError(error.message);
+  }
 };
 jobListSearchEl.addEventListener("click", clickHandler);
 

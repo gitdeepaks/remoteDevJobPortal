@@ -9,7 +9,7 @@ import renderError from "./Error.js";
 import renderSpinner from "./Spinner.js";
 import renderJobList from "./JobList.js";
 
-const submitHandler = (e) => {
+const submitHandler = async (e) => {
   // prevent default behaviour
   e.preventDefault();
 
@@ -31,31 +31,29 @@ const submitHandler = (e) => {
   jobListSearchEl.innerHTML = "";
   // render spinner
   renderSpinner("search");
-  //   spinnerSearchEl.classList.add("spinner--visible");
 
   // fetch search results
-  fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then((data) => {
-      // extract data
-      const { jobItems } = data;
 
-      // remove the spinner
-      renderSpinner("search");
-      // render the job list
-      numberEl.textContent = jobItems.length;
+  try {
+    const res = await fetch(`${BASE_API_URL}/jobs?search=${searchText}`);
+    const data = await res.json();
 
-      // render job items in the list
-      renderJobList(jobItems);
-    })
-    .catch((err) => {
-      renderError(err.message);
-    });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const { jobItems } = data;
+    // remove the spinner
+    renderSpinner("search");
+    // render the job list
+    numberEl.textContent = jobItems.length;
+
+    // render job items in the list
+    renderJobList(jobItems);
+  } catch (error) {
+    renderSpinner("search");
+    renderError(error.message);
+  }
 };
 
 searchFormEl.addEventListener("submit", submitHandler);
