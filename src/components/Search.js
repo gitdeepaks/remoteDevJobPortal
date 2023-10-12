@@ -37,8 +37,7 @@ const submitHandler = (e) => {
   fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
     .then((res) => {
       if (!res.ok) {
-        console.log("Something went wrong");
-        return;
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
       return res.json();
     })
@@ -55,7 +54,7 @@ const submitHandler = (e) => {
       renderJobList(jobItems);
     })
     .catch((err) => {
-      console.log(err);
+      renderError(err.message);
     });
 };
 

@@ -5,6 +5,7 @@ import {
 } from "../common.js";
 import renderSpinner from "./Spinner.js";
 import renderJobDetails from "./JobDetails.js";
+import renderError from "./Error.js";
 
 const renderJobList = (jobItems) => {
   jobItems.slice(0, 7).forEach((jobItem) => {
@@ -62,8 +63,7 @@ const clickHandler = (e) => {
   fetch(`${BASE_API_URL}/jobs/${id}`)
     .then((res) => {
       if (!res.ok) {
-        console.log("Something went wrong");
-        return;
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
       return res.json();
     })
@@ -76,7 +76,10 @@ const clickHandler = (e) => {
       // render the job details
       renderJobDetails(jobItem);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      renderSpinner("search");
+      renderError(err.message);
+    });
 };
 jobListSearchEl.addEventListener("click", clickHandler);
 
