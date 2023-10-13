@@ -1,6 +1,11 @@
-//CONTS
+//const
 export const BASE_API_URL = "https://bytegrad.com/course-assets/js/2/api";
-export const DEFAULT_DIPLAY_TIME = 3500;
+export const DEFAULT_DISPLAY_TIME = 3500;
+
+// CONSTANTS STATE OBJECT
+export const state = {
+  searchJobItems: [],
+};
 
 // Global SELECTORS
 export const errorEl = document.querySelector(".error");

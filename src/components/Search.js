@@ -1,5 +1,6 @@
 import {
   searchInputEl,
+  state,
   searchFormEl,
   jobListSearchEl,
   numberEl,
@@ -40,13 +41,17 @@ const submitHandler = async (e) => {
 
     // extract the data
     const { jobItems } = data;
+
+    // update the state
+    state.searchJobItems = jobItems;
+
     // remove the spinner
     renderSpinner("search");
     // render the job list
     numberEl.textContent = jobItems.length;
 
     // render job items in the list
-    renderJobList(jobItems);
+    renderJobList();
   } catch (error) {
     renderSpinner("search");
     renderError(error.message);
