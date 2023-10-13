@@ -41,3 +41,14 @@ export const spinnerSearchEl = document.querySelector(".spinner--search");
 export const spinnerJobDetailsEl = document.querySelector(
   ".spinner--job-details"
 );
+
+// HELPER / UTILITY FUNCTIONS
+export const getData = async (complteURL) => {
+  const res = await fetch(complteURL);
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.description);
+  }
+  return data;
+};

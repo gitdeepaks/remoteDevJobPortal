@@ -4,6 +4,7 @@ import {
   jobListSearchEl,
   numberEl,
   BASE_API_URL,
+  getData,
 } from "../common.js";
 import renderError from "./Error.js";
 import renderSpinner from "./Spinner.js";
@@ -35,13 +36,9 @@ const submitHandler = async (e) => {
   // fetch search results
 
   try {
-    const res = await fetch(`${BASE_API_URL}/jobs?search=${searchText}`);
-    const data = await res.json();
+    const data = await getData(`${BASE_API_URL}/jobs?search=${searchText}`);
 
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
+    // extract the data
     const { jobItems } = data;
     // remove the spinner
     renderSpinner("search");
