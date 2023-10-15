@@ -5,12 +5,16 @@ import {
   state,
 } from "../common.js";
 import renderJobList from "./JobList.js";
+import renderPaginationBtn from "./Pagination.js";
 
 const clickHandler = (e) => {
   // get the clicked element
   const clickedbtnEl = e.target.closest(".sorting__button");
   // stop funtion if clicked element is not a button
   if (!clickedbtnEl) return;
+
+  // update state(reset to page 1)
+  state.currentPage = 1;
 
   // check if intention is recent or relevent
   const recent = clickedbtnEl.className.includes("--recent") ? true : false;
@@ -35,6 +39,10 @@ const clickHandler = (e) => {
       return a.relevanceScore - b.relevanceScore;
     });
   }
+
+  // reset pagination buttons
+  renderPaginationBtn();
+
   // render job list
   renderJobList();
 };
