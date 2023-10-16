@@ -6,6 +6,7 @@ export const RESULT_PER_PAGE = 7;
 // CONSTANTS STATE OBJECT
 export const state = {
   searchJobItems: [],
+  activeJobItem: {},
   currentPage: 1,
 };
 
