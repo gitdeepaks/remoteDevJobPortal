@@ -22,6 +22,12 @@ const clickHandler = async (e) => {
     state.bookmarkJobItems.push(state.activeJobItem);
   }
 
+  // persist data with localStorage
+  localStorage.setItem(
+    "bookmarkJobItems",
+    JSON.stringify(state.bookmarkJobItems)
+  );
+
   // add active class to the bookmark button
   document
     .querySelector(".job-info__bookmark-icon")
