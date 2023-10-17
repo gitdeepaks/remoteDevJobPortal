@@ -12,15 +12,14 @@ import renderJobDetails from "./JobDetails.js";
 import renderError from "./Error.js";
 
 const renderJobList = (whichJobList = "search") => {
-  //determine correct selector for jobListEl
+  // Determine correct selector for jobListEl
   const jobListEl =
     whichJobList === "search" ? jobListSearchEl : jobListBookmarksEl;
 
-  // remove previous job items
+  // Remove previous job items
+  jobListEl.innerHTML = "";
 
-  jobListSearchEl.innerHTML = "";
-
-  // determine the job items that should be rendered
+  // Determine the job items that should be rendered
   let jobItems;
 
   if (whichJobList === "search") {
@@ -32,19 +31,17 @@ const renderJobList = (whichJobList = "search") => {
     jobItems = state.bookmarkJobItems;
   }
 
-  // display the number of job items
-
-  state.searchJobItems;
+  // Display the number of job items
   jobItems.forEach((jobItem) => {
     const newJobItemHTML = `
       <li class="job-item ${
         state.activeJobItem.id === jobItem.id ? "job-item--active" : ""
       }">
-      <a class="job-item__link" href="${jobItem.id}">
+        <a class="job-item__link" href="${jobItem.id}">
           <div class="job-item__badge">${jobItem.badgeLetters}</div>
           <div class="job-item__middle">
               <h3 class="third-heading">${jobItem.company}</h3>
-              <p class="job-item__company">LakeOperations</p>
+              <p class="job-item__company">${jobItem.company}</p>
               <div class="job-item__extras">
                   <p class="job-item__extra"><i class="fa-solid fa-clock job-item__extra-icon"></i> ${
                     jobItem.duration
@@ -58,11 +55,17 @@ const renderJobList = (whichJobList = "search") => {
               </div>
           </div>
           <div class="job-item__right">
-              <i class="fa-solid fa-bookmark job-item__bookmark-icon"></i>
+              <i class="fa-solid fa-bookmark job-item__bookmark-icon ${
+                state.bookmarkJobItems.some(
+                  (bookmarkJobItem) => bookmarkJobItem.id === jobItem.id
+                )
+                  ? "job-item__bookmark-icon--bookmarked"
+                  : ""
+              } "></i>
               <time class="job-item__time">${jobItem.daysAgo}d</time>
           </div>
-      </a>
-  </li>`;
+        </a>
+      </li>`;
     jobListEl.insertAdjacentHTML("beforeend", newJobItemHTML);
   });
 };
@@ -70,8 +73,11 @@ const renderJobList = (whichJobList = "search") => {
 const clickHandler = async (e) => {
   e.preventDefault();
 
-  // get clicked job item element
+  // Get clicked job item element
   const jobItemEl = e.target.closest(".job-item");
+
+  // Check if jobItemEl exists
+  if (!jobItemEl) return;
 
   document
     .querySelectorAll(".job-item--active")
@@ -79,40 +85,44 @@ const clickHandler = async (e) => {
       jobItemWithActiveClass.classList.remove("job-item--active")
     );
 
-  // add an actiive class
+  // Add an active class
   jobItemEl.classList.add("job-item--active");
-  // empty the job details content
+  // Empty the job details content
   jobDetailsContentEl.innerHTML = "";
 
-  // render spinner
+  // Render spinner
   renderSpinner("job-details");
 
-  //get the data id
+  // Get the data id
   const id = jobItemEl.children[0].getAttribute("href");
 
-  // update the state
+  // Update the state
   const allJobItems = [...state.searchJobItems, ...state.bookmarkJobItems];
   state.activeJobItem = allJobItems.find((jobItem) => jobItem.id === +id);
 
-  // add id to url
+  // Render the search job list
+  renderJobList();
+
+  // Add id to url
   history.pushState(null, "", `/#${id}`);
 
   try {
-    // fetch job details
+    // Fetch job details
     const data = await getData(`${BASE_API_URL}/jobs/${id}`);
 
-    //extract data from job details
+    // Extract data from job details
     const { jobItem } = data;
 
-    // remove the spinner
+    // Remove the spinner
     renderSpinner("job-details");
-    // render the job details
+    // Render the job details
     renderJobDetails(jobItem);
   } catch (error) {
     renderSpinner("job-details");
     renderError(error.message);
   }
 };
+
 jobListSearchEl.addEventListener("click", clickHandler);
 jobListBookmarksEl.addEventListener("click", clickHandler);
 

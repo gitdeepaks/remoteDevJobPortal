@@ -32,6 +32,9 @@ const clickHandler = async (e) => {
   document
     .querySelector(".job-info__bookmark-icon")
     .classList.toggle("job-info__bookmark-icon--bookmarked");
+
+  // render search jobList
+  renderJobList();
 };
 
 const mouseEnterHandler = () => {
